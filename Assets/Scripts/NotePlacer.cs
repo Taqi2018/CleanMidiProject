@@ -10,7 +10,7 @@ public class NotePlacer : MonoBehaviour
 
     void Start()
     {
-        UiManager.OnTrackTrigger += NotePlaceOnSelectedTrack;
+        UiManager.OnPlaceNoteTrigger += NotePlaceOnSelectedTrack;
     }
 
     private void NotePlaceOnSelectedTrack(object sender, UiManager.OnTrackTriggerEventArgs e)
@@ -40,6 +40,6 @@ public class NotePlacer : MonoBehaviour
     }
     private void OnDisable()
     {
-        UiManager.OnTrackTrigger -= NotePlaceOnSelectedTrack;
+        UiManager.OnPlaceNoteTrigger -= NotePlaceOnSelectedTrack;
     }
 }

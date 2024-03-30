@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -513,6 +513,10 @@ PrefabInstance:
     - target: {fileID: 5712468499302906427, guid: 952e6403164db7f4eb0200932ebdbe50, type: 3}
       propertyPath: m_Name
       value: Track60
+      objectReference: {fileID: 0}
+    - target: {fileID: 5712468499302906427, guid: 952e6403164db7f4eb0200932ebdbe50, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5712468499302906428, guid: 952e6403164db7f4eb0200932ebdbe50, type: 3}
       propertyPath: m_Pivot.x
