@@ -6,16 +6,7 @@ public class NoteManager : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] int noteNumber;
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+   
 
     public void SetNoteNumber(int noteNumber_)
     {
