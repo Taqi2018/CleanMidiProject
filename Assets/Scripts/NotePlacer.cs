@@ -18,7 +18,9 @@ public class NotePlacer : MonoBehaviour
         Vector3 notePlacePosition = new Vector3(e.NotePlacePosition.x, e.TrackSelected.transform.position.y, e.TrackSelected.transform.position.z);
         Transform note=Instantiate(notePrefab, notePlacePosition, Quaternion.identity);
         note.SetParent(e.TrackSelected.transform);
+      
         note.transform.localScale = Vector3.one;
+        note.transform.GetComponent<NoteManager>().SetNoteNumber(e.TrackSelected.GetTrackNoteNumber());
 /*        if(note.TryGetComponent<RectTransform>(out RectTransform r)){
             // Get the current sizeDelta of the RectTransform
             Vector2 sizeDelta = r.sizeDelta;

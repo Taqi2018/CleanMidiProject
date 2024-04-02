@@ -90,11 +90,47 @@ public class UiManager : MonoBehaviour
     {
         Debug.Log(e.TouchPosition);
 
-        selectedNote = null;
+        if (selectedNote != null)
+        {
+            SnapNoteBackToTrack(e);
+
+            selectedNote = null;
+        }
+
+
         PlaceNoteIfPossible(e);
-       
 
 
+
+    }
+
+    private void SnapNoteBackToTrack(InputManager.TapInputEventArgs e)
+    {
+        PointerEventData mPointerEventData = new PointerEventData(GetComponent<EventSystem>());
+
+        mPointerEventData.position = e.TouchPosition;
+
+
+        rayCaster.Raycast(mPointerEventData, raycastOutput);
+
+        foreach (RaycastResult r in raycastOutput)
+        {
+
+
+
+            if (r.gameObject.TryGetComponent<TrackManager>(out TrackManager trackManager))
+            {
+                selectedNote.transform.position = new Vector3(e.TouchPosition.x, trackManager.transform.position.y, trackManager.transform.position.z);
+                selectedNote.SetParent(trackManager.transform);
+                selectedNote.transform.GetComponent<NoteManager>().SetNoteNumber(trackManager.GetTrackNoteNumber());
+
+
+            }
+
+        }
+
+
+        raycastOutput.Clear();
     }
 
     private void PlaceNoteIfPossible(InputManager.TapInputEventArgs e)
