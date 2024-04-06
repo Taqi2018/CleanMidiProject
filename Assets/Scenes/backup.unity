@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -468,75 +468,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &388744462
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1668918397659358, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
-      propertyPath: m_Name
-      value: MidiFilePlayer
-      objectReference: {fileID: 0}
-    - target: {fileID: 1668918397659358, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114662785300262660, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
-      propertyPath: midiNameToPlay
-      value: f4
-      objectReference: {fileID: 0}
-    - target: {fileID: 114662785300262660, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
-      propertyPath: midiIndexToPlay
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
 --- !u!114 &412373674 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 114320350483668748, guid: f1aa4788763f8854c9826e449686c328, type: 3}
@@ -1366,7 +1297,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1251689092
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1458,12 +1389,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1251689091}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f49fba5259e90a044bf9c162b06824e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  midiFilePlayer: {fileID: 2071844468}
+  midiFilePlayer: {fileID: 0}
   midiStreamPlayer: {fileID: 412373674}
   playerVelocity: 1
   velocity: 0
@@ -2100,6 +2031,67 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 952e6403164db7f4eb0200932ebdbe50, type: 3}
+--- !u!1001 &1522922828
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1668918397659358, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
+      propertyPath: m_Name
+      value: MidiFilePlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314086310842868, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114662785300262660, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
+      propertyPath: playOnStart
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
 --- !u!1 &1553171375
 GameObject:
   m_ObjectHideFlags: 0
@@ -2621,17 +2613,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 952e6403164db7f4eb0200932ebdbe50, type: 3}
---- !u!114 &2071844468 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 114662785300262660, guid: 32a8d8859acf18d4ba134834a876d5ea, type: 3}
-  m_PrefabInstance: {fileID: 388744462}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fb0999ab241539438b0b012d2ea9779, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &5712468499736682632
 PrefabInstance:
   m_ObjectHideFlags: 0

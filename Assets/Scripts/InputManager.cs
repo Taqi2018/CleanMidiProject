@@ -71,4 +71,10 @@ public class InputManager : MonoBehaviour
 
 
 
+    public Vector2 GetTapPosition()
+    {
+        return input.MidiInput.TapPos.ReadValue<Vector2>();
+    }
+
+
 }

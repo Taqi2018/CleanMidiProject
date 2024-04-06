@@ -1,11 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 public class NoteManager : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] int noteNumber;
+    public static EventHandler <OnNoteTriggerEventArgs>OnNoteTrigger;
+    public  class OnNoteTriggerEventArgs: EventArgs
+    {
+        public int noteNumber;
+    }
     void Start()
     {
         
@@ -21,4 +26,20 @@ public class NoteManager : MonoBehaviour
     {
         noteNumber = noteNumber_;
     }
+
+   
+
+    public int GetNoteNumber()
+    {
+        return noteNumber;
+    }
+
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log(collision.name + "Strike with me");
+        OnNoteTrigger?.Invoke(this, new OnNoteTriggerEventArgs { noteNumber = noteNumber });
+    }
+
+
 }
