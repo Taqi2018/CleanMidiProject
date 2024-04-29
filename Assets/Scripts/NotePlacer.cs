@@ -15,8 +15,11 @@ public class NotePlacer : MonoBehaviour
 
     private void NotePlaceOnSelectedTrack(object sender, UiManager.OnTrackTriggerEventArgs e)
     {
-        Vector3 notePlacePosition = new Vector3(e.NotePlacePosition.x, e.TrackSelected.transform.position.y, e.TrackSelected.transform.position.z);
+
+   
+        Vector3 notePlacePosition = new Vector3(e.NotePlacePosition.x , e.TrackSelected.transform.position.y, e.TrackSelected.transform.position.z);
         Transform note=Instantiate(notePrefab, notePlacePosition, Quaternion.identity);
+       //ch dekhta
         note.SetParent(e.TrackSelected.transform);
       
         note.transform.localScale = Vector3.one;

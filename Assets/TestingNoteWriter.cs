@@ -38,7 +38,7 @@ public class TestingNoteWriter : MonoBehaviour
         int ticksPerQuarterNote = midiWriter.DeltaTicksPerQuarterNote;
 
         midiWriter.AddNote(track1, absoluteTime, channel0, 60, 50, ticksPerQuarterNote);
-
+/*
         // Next note will be played one quarter after the previous
         absoluteTime += ticksPerQuarterNote;
         midiWriter.AddNote(track1, absoluteTime, channel0, 60, 50, ticksPerQuarterNote);
@@ -47,15 +47,26 @@ public class TestingNoteWriter : MonoBehaviour
         midiWriter.AddNote(track1, absoluteTime, channel0, 60, 50, ticksPerQuarterNote);
 
         absoluteTime += ticksPerQuarterNote;
-        midiWriter.AddNote(track1, absoluteTime, channel0, 60, 50, ticksPerQuarterNote);
+        midiWriter.AddNote(track1, absoluteTime, channel0, 60, 50, ticksPerQuarterNote);*/
 
 
         WriteMidiSequenceToFile();
     }
 
 
- 
-   public void PlayDirectlyMidiSequence()
+
+
+    private void WriteMidiSequenceToFile()
+    {
+        // build the path + filename to the midi
+        string filename = Path.Combine(Application.persistentDataPath, "My1" + ".mid");
+        Debug.Log("Write Midi file:" + filename);
+
+        // Write the midi file
+        midiWriter.WriteToFile(filename);
+    }
+
+    public void PlayDirectlyMidiSequence()
     {
         // Play midi with the MidiExternalPlay prefab without saving midi in a file
         MidiFilePlayer midiPlayer = FindObjectOfType<MidiFilePlayer>();
@@ -103,15 +114,6 @@ public class TestingNoteWriter : MonoBehaviour
     }
 
 
-    private void WriteMidiSequenceToFile()
-    {
-        // build the path + filename to the midi
-        string filename = Path.Combine(Application.persistentDataPath, "My1" + ".mid");
-        Debug.Log("Write Midi file:" + filename);
-
-        // Write the midi file
-        midiWriter.WriteToFile(filename);
-    }
     public void PlayNotes()
     {
         // Get all the MIDI events from the writer

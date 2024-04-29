@@ -1,208 +1,3 @@
-/*using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using System;
-public class UiManager : MonoBehaviour
-{
-
-    private GraphicRaycaster rayCaster;
-    public Canvas canvas;
-    List<RaycastResult> raycastOutput;
-    public static EventHandler <OnTrackTriggerEventArgs>OnPlaceNoteTrigger;
-    private bool isNoteOnTap;
-    private bool isTapStarted;
-    private Transform selectedNote;
-    private bool isTrackParent;
-    
-
-    public class OnTrackTriggerEventArgs : EventArgs
-    {
-        public TrackManager TrackSelected;
-        public Vector2 NotePlacePosition;
-
-    }
-    // Start is called before the first frame update
-
-    private void OnEnable()
-    {
-        InputManager.OnTapEndInput += UiChangeOnTapEndTrigger;
-        InputManager.OnTapStartInput += UiChangeOnTapStartTrigger;
-
- 
-       
-    }
-
-    private void UiChangeOnTapStartTrigger(object sender, InputManager.TapInputEventArgs e)
-    {
-        MoveNoteIfPossible(e);
-    }
-
-    private void MoveNoteIfPossible(InputManager.TapInputEventArgs e)
-    {
-        PointerEventData mPointerEventData = new PointerEventData(GetComponent<EventSystem>());
-
-        mPointerEventData.position = e.TouchPosition;
-
-
-
-        *//*
-                rayCaster.Raycast()*//*
-
-        rayCaster.Raycast(mPointerEventData, raycastOutput);
-
-        foreach (RaycastResult r in raycastOutput)
-        {
-
-
-
-            //Making Note
-            if (r.gameObject.TryGetComponent<NoteManager>(out NoteManager noteManager))
-            {
-
-                noteManager.transform.SetParent(canvas.transform);
-
-                selectedNote = noteManager.transform;
-
-            }
-
-           
-
-        }
-
-
-        raycastOutput.Clear();
-    }
-
-    void Start()
-    {
-    
-        rayCaster = canvas.GetComponent<GraphicRaycaster>();
-        raycastOutput = new List<RaycastResult>();
-        isTrackParent = true;
-    }
-
-
-
-    private void UiChangeOnTapEndTrigger(object sender, InputManager.TapInputEventArgs e)
-    {
-        Debug.Log(e.TouchPosition);
-
-        if (selectedNote != null)
-        {
-            SnapNoteBackToTrack(e);
-
-            selectedNote = null;
-        }
-
-
-        PlaceNoteIfPossible(e);
-
-
-
-    }
-
-    private void SnapNoteBackToTrack(InputManager.TapInputEventArgs e)
-    {
-        PointerEventData mPointerEventData = new PointerEventData(GetComponent<EventSystem>());
-
-        mPointerEventData.position = e.TouchPosition;
-
-
-        rayCaster.Raycast(mPointerEventData, raycastOutput);
-
-        foreach (RaycastResult r in raycastOutput)
-        {
-
-
-
-            if (r.gameObject.TryGetComponent<TrackManager>(out TrackManager trackManager))
-            {
-                selectedNote.transform.position = new Vector3(e.TouchPosition.x, trackManager.transform.position.y, trackManager.transform.position.z);
-                selectedNote.SetParent(trackManager.transform);
-                selectedNote.transform.GetComponent<NoteManager>().SetNoteNumber(trackManager.GetTrackNoteNumber());
-
-
-            }
-
-        }
-
-
-        raycastOutput.Clear();
-    }
-
-    private void PlaceNoteIfPossible(InputManager.TapInputEventArgs e)
-    {
-        PointerEventData mPointerEventData = new PointerEventData(GetComponent<EventSystem>());
-
-        mPointerEventData.position = e.TouchPosition;
-
-
-
-        *//*
-                rayCaster.Raycast()*//*
-
-        rayCaster.Raycast(mPointerEventData, raycastOutput);
-
-        foreach (RaycastResult r in raycastOutput)
-        {
-
-
-
-                //Making Note
-                if (r.gameObject.TryGetComponent<NoteManager>(out NoteManager noteManager))
-                {
-                    isNoteOnTap = true;
-                }
-
-                if (r.gameObject.TryGetComponent<TrackManager>(out TrackManager trackManager))
-                {
-                    if (!isNoteOnTap)
-                    {
-
-
-                        Debug.Log("PLACE");
-
-                        OnPlaceNoteTrigger?.Invoke(this, new OnTrackTriggerEventArgs
-                        {
-                            TrackSelected = trackManager,
-                            NotePlacePosition = e.TouchPosition
-                        });
-
-                    }
-                    else
-                    {
-                        isNoteOnTap = false;
-                    }
-
-                }
-            
-        }
-
-
-        raycastOutput.Clear();
-
-    }
-
-
-    private void Update()
-    {
-        if (selectedNote != null)
-        {
-            selectedNote.position = InputManager.instance.input.MidiInput.TapPos.ReadValue<Vector2>();
-        }
-    }
-    private void OnDisable()
-    {
-        InputManager.OnTapEndInput -= UiChangeOnTapEndTrigger;
-        InputManager.OnTapStartInput -= UiChangeOnTapStartTrigger;
-    }
-}
-*/
-
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -227,9 +22,17 @@ public class UiManager : MonoBehaviour
     private bool isStretching;
     public float clickMargin = 1f;
     private Vector3 lastMousePosition;
-    public float snapValue = 32;
+    public float snapValue;
     [SerializeField] int tickValue;
     float objectWidth;
+    public float snapDistance;
+    int ifGreater;
+    private bool isLock;
+    private float newWidth;
+    private float newAnchor;
+    private bool noteDistanceComplete;
+    private int i;
+
     public class OnTrackTriggerEventArgs : EventArgs
     {
         public TrackManager TrackSelected;
@@ -282,7 +85,7 @@ public class UiManager : MonoBehaviour
         foreach (RaycastResult r in raycastOutput)
         {
 
-            if (r.gameObject.TryGetComponent<NoteManager>(out NoteManager noteManager))
+            if (r.gameObject.transform.parent.TryGetComponent<NoteManager>(out NoteManager noteManager))
             {
 
                 noteManager.transform.SetParent(canvas.transform);
@@ -298,20 +101,20 @@ public class UiManager : MonoBehaviour
 
     private void StretchNoteIfPossible(InputManager.TapInputEventArgs e)
     {
+        Debug.Log("Trying");
         PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
         pointerEventData.position = e.TouchPosition;
         rayCaster.Raycast(pointerEventData, raycastOutput);
 
         foreach (RaycastResult r in raycastOutput)
         {
-            if (r.gameObject.TryGetComponent<NoteManager>(out NoteManager noteManager))
+            if (r.gameObject.transform.parent.TryGetComponent<NoteManager>(out NoteManager noteManager))
             {
+                Debug.Log("This is note");
+                BoxCollider2D noteCollider = noteManager.transform.GetChild(0). GetComponent<BoxCollider2D>();
 
-                BoxCollider2D noteCollider = noteManager.GetComponent<BoxCollider2D>();
-
-                leftSide = noteManager.transform.position.x - (noteCollider.bounds.extents.x + clickMargin);
-                rightSide = noteManager.transform.position.x + (noteCollider.bounds.extents.x + clickMargin);
-
+                leftSide = noteManager.transform.position.x;
+                rightSide = noteManager.transform.position.x + (noteCollider.bounds.extents.x-clickMargin);
                 if (e.TouchPosition.x <= leftSide)
                 {
                     toBeStretchedNoteLeft = noteManager.transform;
@@ -340,10 +143,10 @@ public class UiManager : MonoBehaviour
         {
             Vector3 newPosition = InputManager.instance.GetTapPosition();
 
+            Snap(newPosition.x);
+            newPosition.x = Snap(newPosition.x) + GridManager.instance.GetPivotMoveMargin();
 
-            newPosition.x = SnapToGrid(newPosition.x);
-
-
+           /* Debug.Log(newPosition.x);*/
             selectedNote.position = newPosition;
         }
 
@@ -377,37 +180,137 @@ public class UiManager : MonoBehaviour
             Vector3 currentMousePosition = InputManager.instance.GetTapPosition();
 
 
-            RectTransform RightRectNote = toBeStretchedNoteRight.GetComponent<RectTransform>();
+            RectTransform RightRectNote = toBeStretchedNoteRight.GetChild(0).GetComponent<RectTransform>();
+
+            var x = RightRectNote.transform.position.x + RightRectNote.transform.GetComponent<BoxCollider2D>().bounds.extents.x;
+       
+            float dragDistance = x + currentMousePosition.x;
 
 
-            float dragDistance = currentMousePosition.x - lastMousePosition.x;
+  
 
-            float newWidth = RightRectNote.sizeDelta.x + dragDistance * 1;
-            float newAnchor = RightRectNote.anchoredPosition.x + dragDistance * 0.5f;
+            Vector3 rectPosition = RightRectNote.TransformPoint(RightRectNote.rect.center);
 
-            if (newWidth > 40)
+
+     
+
+            // Set the target Transform's position
+
+/*            Debug.Log(currentMousePosition.x % GridManager.instance.distanceBetweenNotes);
+
+            Debug.Log((int)((currentMousePosition.x % GridManager.instance.distanceBetweenNotes) / snapDistance));*/
+
+        /*     Debug.Log((((int)(currentMousePosition.x / snapDistance))).ToString());*/
+
+
+
+            if(Mathf.Round(currentMousePosition.x % GridManager.instance.distanceBetweenNotes) >= 250 &!isLock)
             {
-                RightRectNote.sizeDelta = new Vector2(newWidth, RightRectNote.sizeDelta.y);
-                RightRectNote.anchoredPosition = new Vector2(newAnchor, RightRectNote.anchoredPosition.y);
-                RightRectNote.GetComponent<BoxCollider2D>().size = new Vector2(newWidth, RightRectNote.sizeDelta.y);
+                isLock = true;
+                i++;
             }
 
-            lastMousePosition = currentMousePosition;
+            if(Mathf.Round(currentMousePosition.x % GridManager.instance.distanceBetweenNotes) <= 100 &isLock)
+            {
+                isLock = false;
+            }
+
+            Debug.Log((int)(  Mathf.Round(currentMousePosition.x  % GridManager.instance.distanceBetweenNotes)));
+
+
+            /*
+                        vv = currentMousePosition.x % GridManager.instance.distanceBetweenNotes;*/
+
+            Debug.Log((((int)(currentMousePosition.x / snapDistance))).ToString());
+
+
+
+            if (i > ifGreater /*&!isLock*/)
+            {
+
+
+                ifGreater++;
+
+                Debug.Log("MoveNote to " + ifGreater.ToString() + " position");
+
+
+                toBeStretchedNoteRight.GetComponent<NoteManager>().Width+= snapDistance * 1;
+                toBeStretchedNoteRight.GetComponent<NoteManager>().Anchor += snapDistance * 0.5f;
+           /*     newWidth += snapDistance * 1;
+                newAnchor += snapDistance * 0.5f;*/
+
+                Debug.Log(newWidth.ToString() + " W");
+                Debug.Log(newAnchor.ToString() + " A");
+                if (toBeStretchedNoteRight.GetComponent<NoteManager>().Width > 40)
+                {
+                    RightRectNote.sizeDelta = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Width, RightRectNote.sizeDelta.y);
+                    RightRectNote.anchoredPosition = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Anchor, RightRectNote.anchoredPosition.y);
+                    RightRectNote.GetComponent<BoxCollider2D>().size = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Width, RightRectNote.sizeDelta.y);
+                }
+
+            }
+
+
+
+
+/*
+            else if ((int)(currentMousePosition.x / snapDistance) < ifGreater *//*&!isLock*//*)
+            {
+
+
+               
+                ifGreater--;
+
+
+                Debug.Log("MoveNote to " + ifGreater.ToString() + " position");
+
+                toBeStretchedNoteRight.GetComponent<NoteManager>().Width -= snapDistance * 1;
+                toBeStretchedNoteRight.GetComponent<NoteManager>().Anchor -= snapDistance * 0.5f;
+                *//*     newWidth += snapDistance * 1;
+                     newAnchor += snapDistance * 0.5f;*//*
+
+                Debug.Log(newWidth.ToString() + " W");
+                Debug.Log(newAnchor.ToString() + " A");
+                if (toBeStretchedNoteRight.GetComponent<NoteManager>().Width > 40)
+                {
+                    RightRectNote.sizeDelta = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Width, RightRectNote.sizeDelta.y);
+                    RightRectNote.anchoredPosition = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Anchor, RightRectNote.anchoredPosition.y);
+                    RightRectNote.GetComponent<BoxCollider2D>().size = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Width, RightRectNote.sizeDelta.y);
+                }
+
+            }
+*/
+
+
+            /*         float newWidth = RightRectNote.sizeDelta.x + dragDistance * 1;*/
+            /*    float newAnchor = RightRectNote.anchoredPosition.x + dragDistance * 0.5f;*/
+
+
+
+
         }
     }
 
-    float SnapToGrid(float position)
+    float Snap(float position)
     {
 
-        tickValue = CalculateTickValue(snapValue);
+        float distanceBetweenNote =  GridManager.instance.distanceBetweenNotes;
+        snapDistance = distanceBetweenNote *snapValue;
+        return Mathf.RoundToInt((position / snapDistance))*snapDistance;
+
+     /*   tickValue = CalculateTickValue(snapValue);
         float tickSize = 1f / tickValue;
-        tickSize = tickSize / 4;
+
+        Debug.Log(GridManager.instance.distanceBetweenNotes);
+        tickSize = tickSize / ((GridManager.instance.distanceBetweenNotes)/32);
         float nearestTick = Mathf.Round(position * tickSize) / (tickSize);
         Debug.Log("Snap");
-
-        return nearestTick;
+*/
+        /*     return nearestTick;*/
     }
 
+
+    
     int CalculateTickValue(float snapValue)
     {
         int totalTicksInWholeNote = 32;
@@ -419,8 +322,9 @@ public class UiManager : MonoBehaviour
 
     private void UiChangeOnTapEndTrigger(object sender, InputManager.TapInputEventArgs e)
     {
-        Debug.Log(e.TouchPosition);
-
+i=0;
+ifGreater = 0;
+       isLock = false;
         if (selectedNote != null)
         {
             SnapNoteBackToTrack(e);
@@ -493,7 +397,7 @@ public class UiManager : MonoBehaviour
             {
                 if (!isNoteOnTap)
                 {
-                    Vector2 snappedPosition = new Vector2(SnapToGrid(e.TouchPosition.x), e.TouchPosition.y);
+                    Vector2 snappedPosition = new Vector2(Snap(e.TouchPosition.x), e.TouchPosition.y);
                     Debug.Log("PLACE");
 
                     OnPlaceNoteTrigger?.Invoke(this, new OnTrackTriggerEventArgs
