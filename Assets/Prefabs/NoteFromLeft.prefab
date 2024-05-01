@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8129474146399884460}
   - component: {fileID: 3176716831867717565}
   - component: {fileID: 2063972305754699131}
-  - component: {fileID: 9023699062114835632}
+  - component: {fileID: 1897920113}
   m_Layer: 5
   m_Name: Note
   m_TagString: Untagged
@@ -36,8 +36,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 33.19995, y: 0}
-  m_SizeDelta: {x: 70, y: 40}
+  m_AnchoredPosition: {x: 55.652275, y: 0}
+  m_SizeDelta: {x: 114.9046, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3176716831867717565
 CanvasRenderer:
@@ -77,7 +77,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!61 &9023699062114835632
+--- !u!61 &1897920113
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -90,7 +90,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.16090393, y: -0.0385437}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -101,7 +101,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 70, y: 40}
+  m_Size: {x: 114.54648, y: 39.64746}
   m_EdgeRadius: 0
 --- !u!1 &2998119117155126428
 GameObject:
@@ -150,6 +150,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noteNumber: 0
+  noteDuration: 0
+  Width: 0
+  Anchor: 0
 --- !u!61 &-2289668942185219338
 BoxCollider2D:
   m_ObjectHideFlags: 0

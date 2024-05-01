@@ -38,8 +38,7 @@ public class GridManager : MonoBehaviour
 
             var noteBordar = Instantiate(this.noteBordar, transform);
 
-           
-            Debug.Log(i.ToString()  +","+  tempDis.ToString());
+
             noteBordar.transform.position = new Vector2(tempDis, screenHeight / 2);
             tempDis += distanceBetweenNotes;
 
@@ -47,7 +46,6 @@ public class GridManager : MonoBehaviour
             if (i > 0)
             {
                 noteBordar.GetComponent<ZoomablePinch>().deltaMovement =(int)( (quartarNoteNumber + 1) * zoomSpeed);
-                Debug.Log(noteBordar.name);
             }
             if (i == 1)
             {
@@ -79,7 +77,6 @@ public class GridManager : MonoBehaviour
                 if (j == 3)
                 {
                     q.transform.GetChild(0).GetComponent<Image>().color = Color.black;
-                    Debug.Log(q.transform.GetChild(0).name);
                 }
        
             }
@@ -98,14 +95,9 @@ public class GridManager : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.D))
         {
-
-            Debug.Log((NoteStart.transform.position.x).ToString()+"  ,"+ (noteEnd.transform.position.x).ToString());
-           
    
             distanceBetweenNotes = noteEnd.transform.position.x- NoteStart.transform.position.x;
 
-
-            Debug.Log((Mathf.Round(noteEnd.transform.position.x)).ToString()+"Distance Calc");
 /*            Debug.Log(distanceBetweenNotes.ToString() + "Distance Calc");*/
             /*            Debug.Log(noteEnd.transform.localPosition.x);
                         Debug.Log(noteEnd.transform.position.x);*/
@@ -114,13 +106,7 @@ public class GridManager : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.A))
         {
 
-            Debug.Log((NoteStart.transform.position.x).ToString() + "  ," + (noteEnd.transform.position.x).ToString());
-
-
             distanceBetweenNotes = noteEnd.transform.position.x - NoteStart.transform.position.x;
-
-
-            Debug.Log((Mathf.Round(noteEnd.transform.position.x)).ToString() + "Distance Calc");
 
         }
     }
