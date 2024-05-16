@@ -1250,7 +1250,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 1383553934}
   clickMargin: -10
-  snapValue: 0.25
+  snapValue: 0.03125
   tickValue: 0
   snapDistance: 0
   NoteTickValueText: {fileID: 992258246}

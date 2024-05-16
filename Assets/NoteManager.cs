@@ -17,7 +17,7 @@ public class NoteManager : MonoBehaviour
 
      }
 
-     void Start()
+     void Awake()
      {
           Width = 0;
           Anchor = 0;

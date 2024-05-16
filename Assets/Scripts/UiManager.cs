@@ -93,7 +93,6 @@ public class UiManager : MonoBehaviour
           {
                if (r.gameObject.transform.parent.TryGetComponent<NoteManager>(out NoteManager noteManager))
                {
-                    Debug.Log("This is note");
                     BoxCollider2D noteCollider = noteManager.transform.GetChild(0).GetComponent<BoxCollider2D>();
 
                     //leftSide = noteManager.transform.position.x;
@@ -157,12 +156,14 @@ public class UiManager : MonoBehaviour
 
                float deltaMovement = currentMousePosition.x - lastMousePosition.x;
 
-               if (Mathf.Round(currentMousePosition.x) % (GridManager.instance.distanceBetweenNotes*snapValue) == 0f & deltaMovement > 0)
+               float snapPosition = currentMousePosition.x % (GridManager.instance.distanceBetweenNotes * snapValue);
+
+               if (snapPosition >= 0f & snapPosition < 1.5f & deltaMovement > 0)
                {
                     i++;
                }
 
-               if (Mathf.Round(currentMousePosition.x) % (GridManager.instance.distanceBetweenNotes * snapValue) == 0f & deltaMovement < 0)
+               if (snapPosition >= 0f & snapPosition < 1.5f & deltaMovement < 0)
                {
                     i--;
                }
@@ -171,44 +172,53 @@ public class UiManager : MonoBehaviour
                Debug.Log((int)(Mathf.Round(currentMousePosition.x % GridManager.instance.distanceBetweenNotes)));
 
                Debug.Log((((int)(currentMousePosition.x / snapDistance))).ToString());*/
-               /*Debug.Log(Mathf.Round(currentMousePosition.x) % (GridManager.instance.distanceBetweenNotes * snapValue));*/
+               Debug.Log(currentMousePosition.x % (GridManager.instance.distanceBetweenNotes * snapValue));
+
                if (i > ifGreater)
                {
-
-
-                    Debug.Log("MoveNote to " + ifGreater.ToString() + " position");
-                    toBeStretchedNoteRight.GetComponent<NoteManager>().Width += snapDistance * 3f;
-                    toBeStretchedNoteRight.GetComponent<NoteManager>().Anchor += snapDistance * 1.5f;
-                    toBeStretchedNoteRight.GetComponent<NoteManager>().noteDuration += tickValue;
-                    NoteDurationValueText.text = toBeStretchedNoteRight.GetComponent<NoteManager>().noteDuration.ToString();
-                    Debug.Log("HIIIIIIII" + snapDistance);
-                    if (toBeStretchedNoteRight.GetComponent<NoteManager>().Width > 40)
+                    if (toBeStretchedNoteRight.GetComponent<NoteManager>().Width >= 0)
                     {
-                         RightRectNote.sizeDelta = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Width, RightRectNote.sizeDelta.y);
-                         RightRectNote.anchoredPosition = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Anchor, RightRectNote.anchoredPosition.y);
-                         RightRectNote.GetComponent<BoxCollider2D>().size = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Width, RightRectNote.sizeDelta.y);
+                         ifGreater++;
+                         Debug.Log("MoveNote to " + ifGreater.ToString() + " position");
+                         toBeStretchedNoteRight.GetComponent<NoteManager>().Width += snapDistance * 1.5f;
+                         toBeStretchedNoteRight.GetComponent<NoteManager>().Anchor += snapDistance * 0.75f;
+                         toBeStretchedNoteRight.GetComponent<NoteManager>().noteDuration += tickValue;
+                         NoteDurationValueText.text = toBeStretchedNoteRight.GetComponent<NoteManager>().noteDuration.ToString();
+                         if (toBeStretchedNoteRight.GetComponent<NoteManager>().Width > 5)
+                         {
+                              Debug.Log("HIIIIIIII" + snapDistance);
+                              RightRectNote.sizeDelta = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Width, RightRectNote.sizeDelta.y);
+                              RightRectNote.anchoredPosition = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Anchor, RightRectNote.anchoredPosition.y);
+                              RightRectNote.GetComponent<BoxCollider2D>().size = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Width, RightRectNote.sizeDelta.y);
+                         }
                     }
-                   
-                    ifGreater++;
+
+
+
                }
 
                else if (i < ifGreater)
                {
-                    
-                    Debug.Log("MoveNote to " + ifGreater.ToString() + " position");
-                    toBeStretchedNoteRight.GetComponent<NoteManager>().Width -= snapDistance * 3f;
-                    toBeStretchedNoteRight.GetComponent<NoteManager>().Anchor -= snapDistance * 1.5f;
-                    toBeStretchedNoteRight.GetComponent<NoteManager>().noteDuration -= tickValue;
-                    NoteDurationValueText.text = toBeStretchedNoteRight.GetComponent<NoteManager>().noteDuration.ToString();
-                    Debug.Log("HIIIIIIII----------" + snapDistance);
-                    if (toBeStretchedNoteRight.GetComponent<NoteManager>().Width > 40)
+                    ifGreater--;
+
+                    if (toBeStretchedNoteRight.GetComponent<NoteManager>().Width >= 0)
                     {
-                         RightRectNote.sizeDelta = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Width, RightRectNote.sizeDelta.y);
-                         RightRectNote.anchoredPosition = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Anchor, RightRectNote.anchoredPosition.y);
-                         RightRectNote.GetComponent<BoxCollider2D>().size = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Width, RightRectNote.sizeDelta.y);
+
+                         Debug.Log("MoveNote to " + ifGreater.ToString() + " position");
+                         toBeStretchedNoteRight.GetComponent<NoteManager>().Width -= snapDistance * 1.5f;
+                         toBeStretchedNoteRight.GetComponent<NoteManager>().Anchor -= snapDistance * 0.75f;
+                         toBeStretchedNoteRight.GetComponent<NoteManager>().noteDuration -= tickValue;
+                         NoteDurationValueText.text = toBeStretchedNoteRight.GetComponent<NoteManager>().noteDuration.ToString();
+                         Debug.Log("HIIIIIIII----------" + snapDistance);
+                         if (toBeStretchedNoteRight.GetComponent<NoteManager>().Width > 20)
+                         {
+                              RightRectNote.sizeDelta = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Width, RightRectNote.sizeDelta.y);
+                              RightRectNote.anchoredPosition = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Anchor, RightRectNote.anchoredPosition.y);
+                              RightRectNote.GetComponent<BoxCollider2D>().size = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Width, RightRectNote.sizeDelta.y);
+                         }
                     }
 
-                    ifGreater--;
+
 
                }
 
@@ -251,12 +261,16 @@ public class UiManager : MonoBehaviour
           {
                if (previousPosition < selectedNote.position.x)
                {
-                    selectedNote.GetComponent<NoteManager>().noteTickValue += 8;
+                    Debug.Log((selectedNote.position.x - previousPosition) / snapDistance);
+                    int value = (int)((selectedNote.position.x - previousPosition) / snapDistance);
+                    selectedNote.GetComponent<NoteManager>().noteTickValue += tickValue * value;
                     NoteTickValueText.text = selectedNote.GetComponent<NoteManager>().noteTickValue.ToString();
                }
                else if (previousPosition > selectedNote.position.x)
                {
-                    selectedNote.GetComponent<NoteManager>().noteTickValue += -8;
+                    Debug.Log((previousPosition - selectedNote.position.x) / snapDistance);
+                    int value = (int)((previousPosition - selectedNote.position.x) / snapDistance);
+                    selectedNote.GetComponent<NoteManager>().noteTickValue -= tickValue * value;
                     NoteTickValueText.text = selectedNote.GetComponent<NoteManager>().noteTickValue.ToString();
                }
                SnapNoteBackToTrack(e);
@@ -319,7 +333,7 @@ public class UiManager : MonoBehaviour
                     if (!isNoteOnTap)
                     {
                          Vector2 snappedPosition = new Vector2(Snap(e.TouchPosition.x), e.TouchPosition.y);
-                         int initialTickValue = (int)(snappedPosition.x / snapDistance*8);
+                         int initialTickValue = (int)(snappedPosition.x / snapDistance*tickValue);
                          NoteTickValueText.text = initialTickValue.ToString();
                      
                          OnPlaceNoteTrigger?.Invoke(this, new OnTrackTriggerEventArgs
