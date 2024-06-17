@@ -130,7 +130,7 @@ Transform:
   m_GameObject: {fileID: 2998119117155126428}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -33.2, y: -29.9, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.6, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8129474146399884460}
@@ -151,8 +151,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   noteNumber: 0
   noteDuration: 0
+  noteTickValue: 0
   Width: 0
   Anchor: 0
+  noteSpeed: 0
+  distanceMoved: 0
 --- !u!61 &-2289668942185219338
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -160,10 +163,10 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2998119117155126428}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}

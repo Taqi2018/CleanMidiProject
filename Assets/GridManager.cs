@@ -19,6 +19,8 @@ public class GridManager : MonoBehaviour
     GameObject NoteStart;
     private GameObject noteEnd;
 
+
+   
     void Start()
     {
         instance = this;
@@ -93,7 +95,7 @@ public class GridManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.D))
+        if (Input.GetKey(KeyCode.D))
         {
    
             distanceBetweenNotes = noteEnd.transform.position.x- NoteStart.transform.position.x;
@@ -103,24 +105,48 @@ public class GridManager : MonoBehaviour
                         Debug.Log(noteEnd.transform.position.x);*/
         }
 
-        if (Input.GetKeyUp(KeyCode.A))
+        if (Input.GetKeyUp(KeyCode.D))
+        {
+
+            distanceBetweenNotes = noteEnd.transform.position.x - NoteStart.transform.position.x;
+
+            /*            Debug.Log(distanceBetweenNotes.ToString() + "Distance Calc");*/
+            /*            Debug.Log(noteEnd.transform.localPosition.x);
+                        Debug.Log(noteEnd.transform.position.x);*/
+        }
+
+        if (Input.GetKey(KeyCode.A))
         {
 
             distanceBetweenNotes = noteEnd.transform.position.x - NoteStart.transform.position.x;
 
         }
+
+
+        if (Input.GetKeyUp(KeyCode.D))
+        {
+
+            distanceBetweenNotes = noteEnd.transform.position.x - NoteStart.transform.position.x;
+
+            /*            Debug.Log(distanceBetweenNotes.ToString() + "Distance Calc");*/
+            /*            Debug.Log(noteEnd.transform.localPosition.x);
+                        Debug.Log(noteEnd.transform.position.x);*/
+        }
+
+
+
     }
 
-/*    public int SnapByTick()
-    {
+    /*    public int SnapByTick()
+        {
 
-        int distanceBetweenNote =(int) distanceBetweenNotes;
-        int distanceMovedBasedOnTickValue = distanceBetweenNote / 1;
+            int distanceBetweenNote =(int) distanceBetweenNotes;
+            int distanceMovedBasedOnTickValue = distanceBetweenNote / 1;
 
-       
- 
-        return distanceMovedBasedOnTickValue;
-    }*/
+
+
+            return distanceMovedBasedOnTickValue;
+        }*/
     public float GetPivotMoveMargin()
     {
         return NoteStart.transform.position.x;

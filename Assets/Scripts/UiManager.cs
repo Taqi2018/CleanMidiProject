@@ -18,12 +18,13 @@ public class UiManager : MonoBehaviour
      private float previousPosition;
      private Transform toBeStretchedNoteLeft, toBeStretchedNoteRight;
      private float leftSide;
-     private float rightSide;
+     private float noteEndAtCurrentPos;
      private bool isStretching;
-     public float clickMargin = 1f;
+    private float startNoteDistance;
+    public float clickMargin = 2f;
      private Vector3 lastMousePosition;
      public float snapValue;
-     [SerializeField] int tickValue;
+     [SerializeField] int howManyTicksPerUnitBasedOnSnapValue;
      float objectWidth;
      public float snapDistance;
      int ifGreater;
@@ -32,12 +33,17 @@ public class UiManager : MonoBehaviour
      private int i;
      public Text NoteTickValueText;
      public Text NoteDurationValueText;
+    private int counter;
+    private bool isLock;
 
-     public class OnTrackTriggerEventArgs : EventArgs
+
+    public static UiManager instance;
+    public class OnTrackTriggerEventArgs : EventArgs
      {
           public TrackManager TrackSelected;
           public Vector2 NotePlacePosition;
           public int InitialNoteTickValue;
+        public int noteBordar;
      }
 
      private void OnEnable()
@@ -48,14 +54,17 @@ public class UiManager : MonoBehaviour
 
      void Start()
      {
+        instance = this;
           rayCaster = canvas.GetComponent<GraphicRaycaster>();
           raycastOutput = new List<RaycastResult>();
           isStretching = false;
-     }
+        startNoteDistance = 300;
+
+    }
 
      private void UiChangeOnTapStartTrigger(object sender, InputManager.TapInputEventArgs e)
      {
-          tickValue = CalculateTickValue(snapValue);
+          howManyTicksPerUnitBasedOnSnapValue = HowManyTicksPerUnitBasedOnSnapValue(snapValue);
           StretchNoteIfPossible(e);
           if (!isStretching)
           {
@@ -77,7 +86,7 @@ public class UiManager : MonoBehaviour
                     selectedNote = noteManager.transform;
                     previousPosition = selectedNote.transform.position.x;
                     NoteTickValueText.text = noteManager.noteTickValue.ToString();
-                    NoteDurationValueText.text = noteManager.noteDuration.ToString();
+                  //  NoteDurationValueText.text = noteManager.noteDuration.ToString();
                }
           }
           raycastOutput.Clear();
@@ -95,20 +104,13 @@ public class UiManager : MonoBehaviour
                {
                     BoxCollider2D noteCollider = noteManager.transform.GetChild(0).GetComponent<BoxCollider2D>();
 
-                    //leftSide = noteManager.transform.position.x;
-                    rightSide = noteManager.transform.position.x + noteCollider.bounds.size.x + clickMargin;
-                    /*if (e.TouchPosition.x <= leftSide)
-                    {
-                         toBeStretchedNoteLeft = noteManager.transform;
-                         Debug.Log("HEYYYYYYYYYYYYY IM LEFT");
-                         selectedNote = null;
-                         isStretching = true;
-                         lastMousePosition.x = e.TouchPosition.x;
-                    }*/
-                    if (e.TouchPosition.x >= rightSide)
+                
+                    noteEndAtCurrentPos = noteManager.transform.position.x + noteCollider.bounds.size.x - (noteCollider.bounds.size.x/100)*20;
+
+                    if (e.TouchPosition.x >= noteEndAtCurrentPos)
                     {
                          toBeStretchedNoteRight = noteManager.transform;
-                         Debug.Log("HEYYYYYYYYYYYYY IM Right");
+                      
                          selectedNote = null;
                          isStretching = true;
                          lastMousePosition.x = e.TouchPosition.x;
@@ -118,98 +120,136 @@ public class UiManager : MonoBehaviour
           }
           raycastOutput.Clear();
      }
+    public void NoteMovement()
+    {
+        if (selectedNote != null)
+        {
+            Vector3 newPosition = InputManager.instance.GetTapPosition();
 
+
+            newPosition.x = HowManySnapUnitsAccordingToPosition(newPosition.x) + GridManager.instance.GetPivotMoveMargin();
+
+            selectedNote.position = newPosition;
+
+            float distanceBetweenNote = GridManager.instance.distanceBetweenNotes;
+            float howManySnapUnitsAccordingToPosition = HowManySnapUnitsAccordingToPosition(InputManager.instance.GetTapPosition().x) + GridManager.instance.GetPivotMoveMargin();
+            float distancePerUnit = distanceBetweenNote * snapValue;
+
+
+
+
+            int whichNoteBordarNoteHasToSnap = (int)(howManySnapUnitsAccordingToPosition / distancePerUnit) + 1;
+
+            selectedNote.GetComponent<NoteManager>().noteTickValue = (whichNoteBordarNoteHasToSnap-1) * (int)(32*snapValue) ;
+            NoteTickValueText.text = selectedNote.GetComponent<NoteManager>().noteTickValue.ToString();
+            selectedNote.GetComponent<NoteManager>().noteSpeed = whichNoteBordarNoteHasToSnap * GridManager.instance.zoomSpeed;
+
+            // Debug.Log(whichNoteBordarNoteHasToSnap.ToString()+" Live NoteBordarCal");
+        }
+    }
      private void Update()
-     {
-          if (selectedNote != null)
-          {
-               Vector3 newPosition = InputManager.instance.GetTapPosition();
+    {
 
-               Snap(newPosition.x);
-               newPosition.x = Snap(newPosition.x) + GridManager.instance.GetPivotMoveMargin();
-               
-               selectedNote.position = newPosition;
-          }
+        NoteMovement();
+        float distancePerTick = (GridManager.instance.distanceBetweenNotes) / 32f;
+        Vector2 imaginaryPositionBasedOnMargin = new Vector2(InputManager.instance.GetTapPosition().x - (GridManager.instance.GetPivotMoveMargin()), InputManager.instance.GetTapPosition().y);
 
-          /*if (toBeStretchedNoteLeft != null)
-          {
-               Vector3 currentMousePosition = InputManager.instance.GetTapPosition();
-               RectTransform LeftRectNote = toBeStretchedNoteLeft.GetComponent<RectTransform>();
-               float dragDistance = currentMousePosition.x - lastMousePosition.x;
-               float newWidth = LeftRectNote.sizeDelta.x - dragDistance * 1;
-               float newAnchor = LeftRectNote.anchoredPosition.x + dragDistance * 0.5f;
 
-               if (newWidth > 40)
-               {
-                    LeftRectNote.sizeDelta = new Vector2(newWidth, LeftRectNote.sizeDelta.y);
-                    LeftRectNote.anchoredPosition = new Vector2(newAnchor, LeftRectNote.anchoredPosition.y);
-                    LeftRectNote.GetComponent<BoxCollider2D>().size = new Vector2(newWidth, LeftRectNote.sizeDelta.y);
-               }
-               lastMousePosition = currentMousePosition;
-          }*/
-
+        int tickNo =(int) (imaginaryPositionBasedOnMargin.x / distancePerTick);
+  
           if (toBeStretchedNoteRight != null)
           {
                Vector3 currentMousePosition = InputManager.instance.GetTapPosition();
+               
 
+
+            
                RectTransform RightRectNote = toBeStretchedNoteRight.GetChild(0).GetComponent<RectTransform>();
 
+              BoxCollider2D noteCollider = toBeStretchedNoteRight.transform.GetChild(0).GetComponent<BoxCollider2D>();
+            noteEndAtCurrentPos = toBeStretchedNoteRight.GetComponent<NoteManager>().transform.position.x + noteCollider.bounds.size.x;
+
+            int noteEndAtCurrentTickNo = (int)(noteEndAtCurrentPos / distancePerTick);
+            int noteAtCurrentBordar = (int)(noteEndAtCurrentTickNo / (32 * snapValue));  //32 ---> 4     //
                float deltaMovement = currentMousePosition.x - lastMousePosition.x;
 
-               float snapPosition = currentMousePosition.x % (GridManager.instance.distanceBetweenNotes * snapValue);
+               float DistancePerUnit = GridManager.instance.distanceBetweenNotes * snapValue;
 
-               if (snapPosition >= 0f & snapPosition < 1.5f & deltaMovement > 0)
+             float howFarCurrenMousePositionFromTheLastSnapUnit = currentMousePosition.x % (DistancePerUnit/2);
+
+
+
+            var AbsoluteBordarNo = (int)(tickNo / (32 * snapValue));
+
+            // 5  4  1
+
+            var BoradarNoRelativeToNote = ((AbsoluteBordarNo+1) - noteAtCurrentBordar)+1;
+
+            Debug.Log((AbsoluteBordarNo).ToString()+" bordar no ");
+
+
+            Debug.Log(BoradarNoRelativeToNote.ToString() + "Bordar no rel");
+               if (BoradarNoRelativeToNote > ifGreater )
                {
-                    i++;
-               }
 
-               if (snapPosition >= 0f & snapPosition < 1.5f & deltaMovement < 0)
-               {
-                    i--;
-               }
-               /*Debug.Log("Delta Movement: " + deltaMovement);*/
-               /*Debug.Log("Hi" + ((GridManager.instance.distanceBetweenNotes * snapValue)-1));
-               Debug.Log((int)(Mathf.Round(currentMousePosition.x % GridManager.instance.distanceBetweenNotes)));
-
-               Debug.Log((((int)(currentMousePosition.x / snapDistance))).ToString());*/
-               Debug.Log(currentMousePosition.x % (GridManager.instance.distanceBetweenNotes * snapValue));
-
-               if (i > ifGreater)
-               {
-                    if (toBeStretchedNoteRight.GetComponent<NoteManager>().Width >= 0)
+       
+                 //   if (toBeStretchedNoteRight.GetComponent<NoteManager>().Width >= 0)
                     {
                          ifGreater++;
-                         Debug.Log("MoveNote to " + ifGreater.ToString() + " position");
-                         toBeStretchedNoteRight.GetComponent<NoteManager>().Width += snapDistance * 1.5f;
-                         toBeStretchedNoteRight.GetComponent<NoteManager>().Anchor += snapDistance * 0.75f;
-                         toBeStretchedNoteRight.GetComponent<NoteManager>().noteDuration += tickValue;
+                     
+                    toBeStretchedNoteRight.GetComponent<NoteManager>().Width += (startNoteDistance * snapValue) * 1.5f;
+                         toBeStretchedNoteRight.GetComponent<NoteManager>().Anchor += (startNoteDistance * snapValue) * 0.75f;
+
+
+
+             
+                        toBeStretchedNoteRight.GetComponent<NoteManager>().noteDuration += howManyTicksPerUnitBasedOnSnapValue;
+                    
+                    // Debug.Log("Note Duration :" + toBeStretchedNoteRight.GetComponent<NoteManager>().noteDuration.ToString());
+                      
+                    
+
+               
                          NoteDurationValueText.text = toBeStretchedNoteRight.GetComponent<NoteManager>().noteDuration.ToString();
-                         if (toBeStretchedNoteRight.GetComponent<NoteManager>().Width > 5)
+
+                        //if (toBeStretchedNoteRight.GetComponent<NoteManager>().Width > 5)
                          {
-                              Debug.Log("HIIIIIIII" + snapDistance);
+                  
                               RightRectNote.sizeDelta = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Width, RightRectNote.sizeDelta.y);
                               RightRectNote.anchoredPosition = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Anchor, RightRectNote.anchoredPosition.y);
+                              
                               RightRectNote.GetComponent<BoxCollider2D>().size = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Width, RightRectNote.sizeDelta.y);
-                         }
+                       
+                    }
                     }
 
 
 
                }
 
-               else if (i < ifGreater)
+               else if (BoradarNoRelativeToNote < ifGreater)
                {
                     ifGreater--;
 
                     if (toBeStretchedNoteRight.GetComponent<NoteManager>().Width >= 0)
                     {
+                    
+                    toBeStretchedNoteRight.GetComponent<NoteManager>().Width -=(startNoteDistance*snapValue) * 1.5f;
+                         toBeStretchedNoteRight.GetComponent<NoteManager>().Anchor -= (startNoteDistance * snapValue) * 0.75f;
+                         toBeStretchedNoteRight.GetComponent<NoteManager>().noteDuration -= howManyTicksPerUnitBasedOnSnapValue;
 
-                         Debug.Log("MoveNote to " + ifGreater.ToString() + " position");
-                         toBeStretchedNoteRight.GetComponent<NoteManager>().Width -= snapDistance * 1.5f;
-                         toBeStretchedNoteRight.GetComponent<NoteManager>().Anchor -= snapDistance * 0.75f;
-                         toBeStretchedNoteRight.GetComponent<NoteManager>().noteDuration -= tickValue;
+
+                    //corner case
+                    if (toBeStretchedNoteRight.GetComponent<NoteManager>().noteDuration <= 0)
+                    {
+                        toBeStretchedNoteRight.GetComponent<NoteManager>().noteDuration =  (int)(32*snapValue);
+                    }
+
+
+
+
                          NoteDurationValueText.text = toBeStretchedNoteRight.GetComponent<NoteManager>().noteDuration.ToString();
-                         Debug.Log("HIIIIIIII----------" + snapDistance);
+                   
                          if (toBeStretchedNoteRight.GetComponent<NoteManager>().Width > 20)
                          {
                               RightRectNote.sizeDelta = new Vector2(toBeStretchedNoteRight.GetComponent<NoteManager>().Width, RightRectNote.sizeDelta.y);
@@ -227,25 +267,8 @@ public class UiManager : MonoBehaviour
           }
      }
 
-     float Snap(float position)
-     {
 
-          float distanceBetweenNote = GridManager.instance.distanceBetweenNotes;
-          snapDistance = distanceBetweenNote * snapValue;
-          return Mathf.RoundToInt((position / snapDistance)) * snapDistance;
-
-          /*   tickValue = CalculateTickValue(snapValue);
-             float tickSize = 1f / tickValue;
-
-             Debug.Log(GridManager.instance.distanceBetweenNotes);
-             tickSize = tickSize / ((GridManager.instance.distanceBetweenNotes)/32);
-             float nearestTick = Mathf.Round(position * tickSize) / (tickSize);
-             Debug.Log("Snap");
-     */
-          /*     return nearestTick;*/
-     }
-
-     int CalculateTickValue(float snapValue)
+     int HowManyTicksPerUnitBasedOnSnapValue(float snapValue)
      {
           int totalTicksInWholeNote = 32;
           float tickValuefloat = totalTicksInWholeNote * snapValue;
@@ -261,20 +284,22 @@ public class UiManager : MonoBehaviour
           {
                if (previousPosition < selectedNote.position.x)
                {
-                    Debug.Log((selectedNote.position.x - previousPosition) / snapDistance);
-                    int value = (int)((selectedNote.position.x - previousPosition) / snapDistance);
-                    selectedNote.GetComponent<NoteManager>().noteTickValue += tickValue * value;
-                    NoteTickValueText.text = selectedNote.GetComponent<NoteManager>().noteTickValue.ToString();
+   
+                    int howManySnapUnitsNoteMovedTowardsRight = (int)((selectedNote.position.x - previousPosition) / startNoteDistance);
+
+               //     selectedNote.GetComponent<NoteManager>().noteTickValue += howManyTicksPerUnitBasedOnSnapValue * howManySnapUnitsNoteMovedTowardsRight;
+                //    NoteTickValueText.text = selectedNote.GetComponent<NoteManager>().noteTickValue.ToString();
                }
                else if (previousPosition > selectedNote.position.x)
                {
-                    Debug.Log((previousPosition - selectedNote.position.x) / snapDistance);
-                    int value = (int)((previousPosition - selectedNote.position.x) / snapDistance);
-                    selectedNote.GetComponent<NoteManager>().noteTickValue -= tickValue * value;
-                    NoteTickValueText.text = selectedNote.GetComponent<NoteManager>().noteTickValue.ToString();
+
+                    int howManySnapUnitsNoteMovedTowardsLeft = (int)((previousPosition - selectedNote.position.x) / startNoteDistance);
+                 //   selectedNote.GetComponent<NoteManager>().noteTickValue -= howManyTicksPerUnitBasedOnSnapValue * howManySnapUnitsNoteMovedTowardsLeft;
+              //      NoteTickValueText.text = selectedNote.GetComponent<NoteManager>().noteTickValue.ToString();
                }
                SnapNoteBackToTrack(e);
                selectedNote = null;
+
           }
 
           else if (toBeStretchedNoteLeft != null || toBeStretchedNoteRight != null)
@@ -303,6 +328,7 @@ public class UiManager : MonoBehaviour
 
                if (r.gameObject.TryGetComponent<TrackManager>(out TrackManager trackManager))
                {
+
                     selectedNote.transform.position = new Vector3(selectedNote.transform.position.x, trackManager.transform.position.y, trackManager.transform.position.z);
                     selectedNote.SetParent(trackManager.transform);
                     selectedNote.transform.GetComponent<NoteManager>().SetNoteNumber(trackManager.GetTrackNoteNumber());
@@ -311,11 +337,45 @@ public class UiManager : MonoBehaviour
           }
           raycastOutput.Clear();
      }
+    float HowManySnapUnitsAccordingToPosition(float position)
+    {
+
+        float distanceBetweenNote = GridManager.instance.distanceBetweenNotes;
+        snapDistance = distanceBetweenNote * snapValue;
+
+    
+        return Mathf.RoundToInt((position / snapDistance)) * snapDistance;
+
+
+        /*   tickValue = CalculateTickValue(snapValue);
+           float tickSize = 1f / tickValue;
+
+           Debug.Log(GridManager.instance.distanceBetweenNotes);
+           tickSize = tickSize / ((GridManager.instance.distanceBetweenNotes)/32);
+           float nearestTick = Mathf.Round(position * tickSize) / (tickSize);
+           Debug.Log("Snap");
+   */
+        /*     return nearestTick;*/
+
+        //800   /0.03125
+    }
+
+    int GetNoteBordar(InputManager.TapInputEventArgs e)
+    {
+        float distanceBetweenNote = GridManager.instance.distanceBetweenNotes;
+        float howManySnapUnitsAccordingToPosition = HowManySnapUnitsAccordingToPosition(e.TouchPosition.x);
+        float distancePerUnit = distanceBetweenNote * snapValue;
 
 
 
-     private void PlaceNoteIfPossible(InputManager.TapInputEventArgs e)
+
+        int whichNoteBordarNoteHasToSnap = (int)(howManySnapUnitsAccordingToPosition / distancePerUnit);
+        return whichNoteBordarNoteHasToSnap;
+    }
+
+    private void PlaceNoteIfPossible(InputManager.TapInputEventArgs e)
      {
+         
           PointerEventData mPointerEventData = new PointerEventData(GetComponent<EventSystem>());
           mPointerEventData.position = e.TouchPosition;
           rayCaster.Raycast(mPointerEventData, raycastOutput);
@@ -332,16 +392,27 @@ public class UiManager : MonoBehaviour
                {
                     if (!isNoteOnTap)
                     {
-                         Vector2 snappedPosition = new Vector2(Snap(e.TouchPosition.x), e.TouchPosition.y);
-                         int initialTickValue = (int)(snappedPosition.x / snapDistance*tickValue);
+                         Vector2 snappedPosition = new Vector2(HowManySnapUnitsAccordingToPosition(e.TouchPosition.x) + GridManager.instance.GetPivotMoveMargin(), e.TouchPosition.y);
+
+
+
+
+                    int whichNoteBordarNoteHasToSnap = GetNoteBordar(e);
+                   
+                    int initialTickValue = (int)(snappedPosition.x / snapDistance*howManyTicksPerUnitBasedOnSnapValue);
                          NoteTickValueText.text = initialTickValue.ToString();
-                     
-                         OnPlaceNoteTrigger?.Invoke(this, new OnTrackTriggerEventArgs
-                         {
-                              TrackSelected = trackManager,
-                              NotePlacePosition = snappedPosition,
-                              InitialNoteTickValue = initialTickValue
-                         });
+
+
+                    //corner case
+                    NoteDurationValueText.text = (32*snapValue).ToString();
+
+                    OnPlaceNoteTrigger?.Invoke(this, new OnTrackTriggerEventArgs
+                    {
+                        TrackSelected = trackManager,
+                        NotePlacePosition = snappedPosition,
+                        InitialNoteTickValue = initialTickValue,
+                        noteBordar = whichNoteBordarNoteHasToSnap + 1
+                    }) ;
 
                     }
                     else

@@ -11,9 +11,22 @@ public class NoteManager : MonoBehaviour
      public float Width;
      public float Anchor;
      public static EventHandler<OnNoteTriggerEventArgs> OnNoteTrigger;
-     public class OnNoteTriggerEventArgs : EventArgs
+
+    public float noteSpeed;
+
+    public float distanceMoved;
+    private float currentNoteXScale;
+    private float noteXScale;
+
+    void Start()
+    {
+        distanceMoved = 0;
+        currentNoteXScale = transform.localScale.x;
+    }
+    public class OnNoteTriggerEventArgs : EventArgs
      {
           public int noteNumber;
+        public int noteDuration;
 
      }
 
@@ -21,7 +34,8 @@ public class NoteManager : MonoBehaviour
      {
           Width = 0;
           Anchor = 0;
-          noteDuration = 8;
+          noteDuration = 0;
+
      }
 
      public void SetNoteNumber(int noteNumber_)
@@ -37,7 +51,10 @@ public class NoteManager : MonoBehaviour
      private void OnTriggerEnter2D(Collider2D collision)
      {
           Debug.Log(collision.name + "Strike with me");
-          OnNoteTrigger?.Invoke(this, new OnNoteTriggerEventArgs { noteNumber = noteNumber });
+          OnNoteTrigger?.Invoke(this, new OnNoteTriggerEventArgs { noteNumber = noteNumber,
+              noteDuration=noteDuration });
+
+       
      }
 
      public void SetWidth(float w)
@@ -61,4 +78,45 @@ public class NoteManager : MonoBehaviour
      }
 
 
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKey(KeyCode.A))
+        {
+            transform.position -= new Vector3(noteSpeed * Time.deltaTime, 0, 0);
+
+/*            noteXScale = ((GridManager.instance.distanceBetweenNotes / 2) * 0.67f) / 150f;
+
+            float deltaX = noteXScale - currentNoteXScale;
+
+            Debug.Log(GridManager.instance.distanceBetweenNotes.ToString() + " Change in x ");
+            transform.localScale += new Vector3(deltaX, 0, 0);
+            currentNoteXScale = noteXScale;*/
+        }
+
+        if (Input.GetKey(KeyCode.D))
+        {
+            transform.position += new Vector3(noteSpeed * Time.deltaTime, 0, 0);
+            distanceMoved += noteSpeed;
+/*
+            noteXScale = ((GridManager.instance.distanceBetweenNotes / 2) * 0.67f) / 150f;
+            
+            float deltaX = noteXScale - currentNoteXScale;
+
+    
+            transform.localScale+= new Vector3(deltaX, 0, 0);
+            currentNoteXScale = noteXScale;*/
+        }
+        //0.67-->150  :x-->200
+        //150/0.67  =200/x
+        //150/0.67  =200/x
+        //150/0.67  =200/x
+        //150/0.67  =200/x
+        //x=200*0.67/150
+
+        // Calculate the note scale every frame
+        noteXScale = ((GridManager.instance.distanceBetweenNotes / 2) * 0.67f) / 150f;
+
+        transform.localScale = new Vector3(noteXScale, 1, 1);
+    }
 }

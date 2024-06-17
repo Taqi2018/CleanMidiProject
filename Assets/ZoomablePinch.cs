@@ -32,19 +32,8 @@ public class ZoomablePinch : MonoBehaviour
             distanceMoved += deltaMovement;
             Debug.Log(transform.position.x);
 
-
-/*            if (tag == "b")
-            {
-               
-                Debug.Log(distanceMoved+400 );
-                
-            }*/
-
         }
-/*        if (Input.GetKeyUp(KeyCode.D))
-        {
-           *//* GridManager.instance.distanceBetweenNotes += distanceMoved /100;*//*
-        }*/
+
 
     }
 }

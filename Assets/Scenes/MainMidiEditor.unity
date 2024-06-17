@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -927,6 +927,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   notePrefab: {fileID: 8572257358944630986, guid: 17ea39f2b970285458aa21164abe0643, type: 3}
+  noteXScale: 0
 --- !u!4 &690508564
 Transform:
   m_ObjectHideFlags: 0
@@ -1250,9 +1251,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 1383553934}
   clickMargin: -10
-  snapValue: 0.03125
-  tickValue: 0
-  snapDistance: 0
+  snapValue: 0.25
+  howManyTicksPerUnitBasedOnSnapValue: 0
+  snapDistance: 1
   NoteTickValueText: {fileID: 992258246}
   NoteDurationValueText: {fileID: 950818237}
 --- !u!4 &841502052
@@ -2949,7 +2950,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 115.15, y: 121.8501}
+  m_AnchoredPosition: {x: 115.1499, y: 121.8501}
   m_SizeDelta: {x: 159.87, y: -883.71}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1718953333

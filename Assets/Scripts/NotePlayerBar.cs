@@ -14,6 +14,7 @@ public class NotePlayerBar : MonoBehaviour
     private bool shouldNotePlayerMove;
     [SerializeField] int velocity;
     private MPTKEvent midiEvent;
+    public int noOfQurtarNotes;
     [SerializeField] int duration;
 
     public MPTKEvent NotePlaying { get; private set; }
@@ -21,27 +22,32 @@ public class NotePlayerBar : MonoBehaviour
     private void Start()
     {
 
-        /*        PlayOneNote();*/
+
 
         NoteManager.OnNoteTrigger += PlayNote;
 
         initialPositionOfNotePlayer = transform.position;
-        duration = 1000;
+    
         velocity = 100;
-/*
-        midiEvent = TestingNoteWriter.i.midiWriter.MPTK_LastEvent;
-        midiStreamPlayer.MPTK_PlayEvent(midiEvent);*/
+
     }
 
     private void PlayNote(object sender, NoteManager.OnNoteTriggerEventArgs e)
     {
+
+        if (e.noteDuration <= 0)
+        {
+            e.noteDuration =(int) ( UiManager.instance.snapValue * 32);
+        }
+
+        noOfQurtarNotes = e.noteDuration / (int)(UiManager.instance.snapValue * 32);
         // Play a note C5 for 1 second on the channel 0
         NotePlaying = new MPTKEvent()
         {
             Command = MPTKCommand.NoteOn,
             Value = e.noteNumber,  //C5
             Channel = 0,
-            Duration =(int)(duration),
+            Duration = noOfQurtarNotes * 480,
             Velocity = ((int)velocity),
             Delay = 0,
         };
